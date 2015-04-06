@@ -41,45 +41,67 @@ public class DiningPhilosophers
 	{
 		try
 		{
-			/*
-			 * TODO:
-			 * Should be settable from the command line
-			 * or the default if no arguments supplied.
-			 */
-			int iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
-
-			// Make the monitor aware of how many philosophers there are
-			soMonitor = new Monitor(iPhilosophers);
-
-			// Space for all the philosophers
-			Philosopher aoPhilosophers[] = new Philosopher[iPhilosophers];
-
-			// Let 'em sit down
-			for(int j = 0; j < iPhilosophers; j++)
+			int iPhilosophers;
+			boolean validInput = true;
+			try  
+			  { 
+				if (argv.length != 0)
+					if (Integer.parseInt(argv[0]) < 0)
+						throw new Exception();
+				
+			  }
+				catch (Exception e) {
+				// TODO Auto-generated catch block
+				  validInput = false; 
+			}  
+			if (validInput) // check if positive or if user gave a value
 			{
-				aoPhilosophers[j] = new Philosopher();
-				aoPhilosophers[j].start();
-			}
+					if(argv.length == 0)
+						iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+					else
+						iPhilosophers = Integer.parseInt(argv[0]);
+					
+					
+	
+				// Make the monitor aware of how many philosophers there are
+				soMonitor = new Monitor(iPhilosophers);
+	
+				// Space for all the philosophers
+				Philosopher aoPhilosophers[] = new Philosopher[iPhilosophers];
+	
+				System.out.println
+				(
+					iPhilosophers +
+					" philosopher(s) came in for a dinner."
+				);
+				
+				// Let 'em sit down
+				for(int j = 0; j < iPhilosophers; j++)
+				{
+					aoPhilosophers[j] = new Philosopher();
+					aoPhilosophers[j].start();
+				}
+	
+	
+	
+				// Main waits for all its children to die...
+				// I mean, philosophers to finish their dinner.
+				for(int j = 0; j < iPhilosophers; j++)
+					aoPhilosophers[j].join();
+	
+				System.out.println("All philosophers have left. System terminates normally.");
+			} else 
+				System.out.println("argv[0] is not a positivie decimal integer");
+			
 
-			System.out.println
-			(
-				iPhilosophers +
-				" philosopher(s) came in for a dinner."
-			);
-
-			// Main waits for all its children to die...
-			// I mean, philosophers to finish their dinner.
-			for(int j = 0; j < iPhilosophers; j++)
-				aoPhilosophers[j].join();
-
-			System.out.println("All philosophers have left. System terminates normally.");
 		}
 		catch(InterruptedException e)
 		{
 			System.err.println("main():");
 			reportException(e);
 			System.exit(1);
-		}
+		}	
+
 	} // main()
 
 	/**

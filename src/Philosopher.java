@@ -25,9 +25,11 @@ public class Philosopher extends BaseThread
 	{
 		try
 		{
-			// ...
+			System.out.println("Philosopher with TID " + this.iTID + " has started eating" );
+			yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
-			// ...
+			yield();
+			System.out.println("Philosopher with TID " + this.iTID + " has finished eating" );
 		}
 		catch(InterruptedException e)
 		{
@@ -44,10 +46,23 @@ public class Philosopher extends BaseThread
 	 * - Then sleep() for a random interval.
 	 * - yield
 	 * - The print that they are done thinking.
+	 * @throws InterruptedException 
 	 */
-	public void think()
+	public void think() 
 	{
-		// ...
+		try{
+			System.out.println("Philosopher with TID " + this.iTID + " has started thinking" );
+			yield();
+			sleep((long)(Math.random() * TIME_TO_WASTE));
+			yield();
+			System.out.println("Philosopher with TID " + this.iTID + " has finished thinking" );
+		}
+		catch(InterruptedException e)
+		{
+			System.err.println("Philosopher.think():");
+			DiningPhilosophers.reportException(e);
+			System.exit(1);
+		}
 	}
 
 	/**
@@ -60,11 +75,11 @@ public class Philosopher extends BaseThread
 	 */
 	public void talk()
 	{
-		// ...
-
+		System.out.println("Philosopher with TID " + this.iTID + " has started talking" );
+		yield();
 		saySomething();
-
-		// ...
+		yield();
+		System.out.println("Philosopher with TID " + this.iTID + " has finished talking" );
 	}
 
 	/**
@@ -72,30 +87,43 @@ public class Philosopher extends BaseThread
 	 */
 	public void run()
 	{
-		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
-		{
-			DiningPhilosophers.soMonitor.pickUp(getTID());
-
-			eat();
-
-			DiningPhilosophers.soMonitor.putDown(getTID());
-
-			think();
-
-			/*
-			 * TODO:
-			 * A decision is made at random whether this particular
-			 * philosopher is about to say something terribly useful.
-			 */
-			if(true == false)
-			{
-				// Some monitor ops down here...
-				talk();
-				// ...
+		try {
+			try {
+				DiningPhilosophers.soMonitor.pickUp(getTID());
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-
-			yield();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+
+		eat();
+
+		DiningPhilosophers.soMonitor.putDown(getTID());
+
+		think();
+
+		/*
+		 * TODO:
+		 * A decision is made at random whether this particular
+		 * philosopher is about to say something terribly useful.
+		 */
+		try {
+			DiningPhilosophers.soMonitor.requestTalk(getTID());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(DiningPhilosophers.soMonitor.philosophereTalkingId == getTID())
+		{
+			// Some monitor ops down here...
+			talk();
+			DiningPhilosophers.soMonitor.endTalk();
+		}
+
+		yield();
 	} // run()
 
 	/**
