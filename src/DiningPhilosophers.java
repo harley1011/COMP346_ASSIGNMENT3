@@ -78,6 +78,7 @@ public class DiningPhilosophers
 				for(int j = 0; j < iPhilosophers; j++)
 				{
 					aoPhilosophers[j] = new Philosopher();
+					aoPhilosophers[j].setDINING_STEPS(DINING_STEPS);
 					aoPhilosophers[j].start();
 				}
 	
@@ -87,6 +88,8 @@ public class DiningPhilosophers
 				// I mean, philosophers to finish their dinner.
 				for(int j = 0; j < iPhilosophers; j++)
 					aoPhilosophers[j].join();
+				
+				
 	
 				System.out.println("All philosophers have left. System terminates normally.");
 			} else 

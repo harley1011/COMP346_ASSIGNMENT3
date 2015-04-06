@@ -12,6 +12,28 @@ public class Philosopher extends BaseThread
 	 * Max time an action can take (in milliseconds)
 	 */
 	public static final long TIME_TO_WASTE = 1000;
+	
+	/**
+	 * Added this instance variable to the class. It will be used to determine the number of times that each philosopher thread will 
+	 * execute its run method 
+	 */
+	private int DINING_STEPS = 1;
+	
+	/**
+	 * Mutator method for the DINING_STEPS
+	 * @param DINING_STEPS
+	 */
+	public void setDINING_STEPS(int DINING_STEPS) {
+		this.DINING_STEPS = DINING_STEPS;
+	}
+	
+	/**
+	 * Accessor method for the DINING_STEPS
+	 * @return
+	 */
+	public int getDINING_STEPS() {
+		return DINING_STEPS;
+	}
 
 	/**
 	 * The act of eating.
@@ -87,43 +109,44 @@ public class Philosopher extends BaseThread
 	 */
 	public void run()
 	{
-		try {
+		for (int i = 0; i < getDINING_STEPS(); i++) { // Added a for loop to run the logic DINING_STEPS number of times per philosopher. In the case of this assignment, it should be 10 times. 
 			try {
-				DiningPhilosophers.soMonitor.pickUp(getTID());
-			} catch (InterruptedException e1) {
+				try {
+					DiningPhilosophers.soMonitor.pickUp(getTID());
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+	
+			eat();
+	
+			DiningPhilosophers.soMonitor.putDown(getTID());
+	
+			think();
+	
+			/*
+			 * TODO:
+			 * A decision is made at random whether this particular
+			 * philosopher is about to say something terribly useful.
+			 */
+			try {
+				DiningPhilosophers.soMonitor.requestTalk(getTID());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(DiningPhilosophers.soMonitor.philosophereTalkingId == getTID()) // Check if the current philosopher is allowed to talk
+			{
+				// Some monitor ops down here...
+				talk();
+				DiningPhilosophers.soMonitor.endTalk(getTID());
+			}
+			yield();
 		}
-
-		eat();
-
-		DiningPhilosophers.soMonitor.putDown(getTID());
-
-		think();
-
-		/*
-		 * TODO:
-		 * A decision is made at random whether this particular
-		 * philosopher is about to say something terribly useful.
-		 */
-		try {
-			DiningPhilosophers.soMonitor.requestTalk(getTID());
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(DiningPhilosophers.soMonitor.philosophereTalkingId == getTID()) // Check if the current philosopher is allowed to talk
-		{
-			// Some monitor ops down here...
-			talk();
-			DiningPhilosophers.soMonitor.endTalk(getTID());
-		}
-
-		yield();
 	} // run()
 
 	/**
