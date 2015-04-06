@@ -45,7 +45,7 @@ public class DiningPhilosophers
 			boolean validInput = true;
 			try  
 			  { 
-				if (argv.length != 0)
+				if (argv.length != 0) // Validate the input, if it isn't what we want then an exception will be thrown when trying to cast it to an int or we will throw it if it is a negative number
 					if (Integer.parseInt(argv[0]) < 0)
 						throw new Exception();
 				
@@ -54,15 +54,14 @@ public class DiningPhilosophers
 				// TODO Auto-generated catch block
 				  validInput = false; 
 			}  
-			if (validInput) // check if positive or if user gave a value
+			if (validInput) // check if input was valid
 			{
 					if(argv.length == 0)
 						iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 					else
-						iPhilosophers = Integer.parseInt(argv[0]);
+						iPhilosophers = Integer.parseInt(argv[0]); // cast passed input to integer
 					
-					
-	
+				
 				// Make the monitor aware of how many philosophers there are
 				soMonitor = new Monitor(iPhilosophers);
 	

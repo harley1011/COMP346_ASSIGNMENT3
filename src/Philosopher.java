@@ -116,11 +116,11 @@ public class Philosopher extends BaseThread
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(DiningPhilosophers.soMonitor.philosophereTalkingId == getTID())
+		if(DiningPhilosophers.soMonitor.philosophereTalkingId == getTID()) // Check if the current philosopher is allowed to talk
 		{
 			// Some monitor ops down here...
 			talk();
-			DiningPhilosophers.soMonitor.endTalk();
+			DiningPhilosophers.soMonitor.endTalk(getTID());
 		}
 
 		yield();

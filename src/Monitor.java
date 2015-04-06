@@ -6,7 +6,7 @@
  */
 public class Monitor
 {
-	public enum PhilosophereState {Eating, Hungry, Thinking};
+	public enum PhilosophereState {Eating, Hungry, Thinking, Talking};
 	/*
 	 * ------------
 	 * Data members
@@ -59,7 +59,7 @@ public class Monitor
 	 */
 	public synchronized void putDown(final int piTID)
 	{
-		philosophereSates[piTID - 1] = PhilosophereState.Thinking;
+		philosophereSates[piTID - 1] = PhilosophereState.Thinking; // Put down the chopsticks by going back to the thinking state
 		notifyAll();
 	}
 
@@ -68,22 +68,22 @@ public class Monitor
 	 * (while she is not eating).
 	 * @throws InterruptedException 
 	 */
-	public synchronized void requestTalk(final int piTID) throws InterruptedException
+	public synchronized void requestTalk(final int piTID) throws InterruptedException 
 	{
-		while(philosophereTalkingId != 0)
-		{
+		while(philosophereTalkingId != 0) // Check to see if anyone else is talking
 			wait();
-		}
-		philosophereTalkingId = piTID;
+		philosophereTalkingId = piTID; // Save the Id so we don't have to search the array to see if another philosophere is currently talking
+		philosophereSates[piTID - 1] = PhilosophereState.Talking;
 	}
 
 	/**
 	 * When one philosopher is done talking stuff, others
 	 * can feel free to start talking.
 	 */
-	public synchronized void endTalk()
+	public synchronized void endTalk(final int piTID)
 	{
 		philosophereTalkingId = 0;
+		philosophereSates[piTID - 1] = PhilosophereState.Thinking;
 		notifyAll();
 	}
 }
